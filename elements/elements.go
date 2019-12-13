@@ -128,6 +128,7 @@ func (DoubleNS) Element(start uint, writer []byte, key string, f float64) (int, 
 	n, err := Byte.Encode(start, writer, '\x01')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -135,12 +136,14 @@ func (DoubleNS) Element(start uint, writer []byte, key string, f float64) (int, 
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Double.Encode(start, writer, f)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -155,6 +158,7 @@ func (StringNS) Encode(start uint, writer []byte, s string) (int, error) {
 
 	written, err := Int32.Encode(start, writer, int32(len(s))+1)
 	total += written
+
 	if err != nil {
 		return total, err
 	}
@@ -177,6 +181,7 @@ func (StringNS) Element(start uint, writer []byte, key string, s string) (int, e
 	n, err := Byte.Encode(start, writer, '\x02')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -184,12 +189,14 @@ func (StringNS) Element(start uint, writer []byte, key string, s string) (int, e
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = String.Encode(start, writer, s)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -211,6 +218,7 @@ func (DocumentNS) Element(start uint, writer []byte, key string, doc []byte) (in
 	n, err := Byte.Encode(start, writer, '\x03')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -218,12 +226,14 @@ func (DocumentNS) Element(start uint, writer []byte, key string, doc []byte) (in
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Document.Encode(start, writer, doc)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -245,6 +255,7 @@ func (ArrayNS) Element(start uint, writer []byte, key string, arr []byte) (int, 
 	n, err := Byte.Encode(start, writer, '\x04')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -252,12 +263,14 @@ func (ArrayNS) Element(start uint, writer []byte, key string, arr []byte) (int, 
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Array.Encode(start, writer, arr)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -282,6 +295,7 @@ func (BinNS) Encode(start uint, writer []byte, b []byte, btype byte) (int, error
 	n, err := Int32.Encode(start, writer, int32(len(b)))
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -306,6 +320,7 @@ func (BinNS) encodeSubtype2(start uint, writer []byte, b []byte) (int, error) {
 	n, err := Int32.Encode(start, writer, int32(len(b))+4)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -317,6 +332,7 @@ func (BinNS) encodeSubtype2(start uint, writer []byte, b []byte) (int, error) {
 	n, err = Int32.Encode(start, writer, int32(len(b)))
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -334,6 +350,7 @@ func (BinNS) Element(start uint, writer []byte, key string, b []byte, btype byte
 	n, err := Byte.Encode(start, writer, '\x05')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -341,12 +358,14 @@ func (BinNS) Element(start uint, writer []byte, key string, b []byte, btype byte
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Binary.Encode(start, writer, b, btype)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -368,6 +387,7 @@ func (ObjectIDNS) Element(start uint, writer []byte, key string, oid [12]byte) (
 	n, err := Byte.Encode(start, writer, '\x07')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -375,12 +395,14 @@ func (ObjectIDNS) Element(start uint, writer []byte, key string, oid [12]byte) (
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = ObjectID.Encode(start, writer, oid)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -412,6 +434,7 @@ func (BooleanNS) Element(start uint, writer []byte, key string, b bool) (int, er
 	n, err := Byte.Encode(start, writer, '\x08')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -419,12 +442,14 @@ func (BooleanNS) Element(start uint, writer []byte, key string, b bool) (int, er
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Boolean.Encode(start, writer, b)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -446,6 +471,7 @@ func (DatetimeNS) Element(start uint, writer []byte, key string, dt int64) (int,
 	n, err := Byte.Encode(start, writer, '\x09')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -453,12 +479,14 @@ func (DatetimeNS) Element(start uint, writer []byte, key string, dt int64) (int,
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = DateTime.Encode(start, writer, dt)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -473,6 +501,7 @@ func (RegexNS) Encode(start uint, writer []byte, pattern, options string) (int, 
 
 	written, err := CString.Encode(start, writer, pattern)
 	total += written
+
 	if err != nil {
 		return total, err
 	}
@@ -491,6 +520,7 @@ func (RegexNS) Element(start uint, writer []byte, key string, pattern, options s
 	n, err := Byte.Encode(start, writer, '\x0B')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -498,6 +528,7 @@ func (RegexNS) Element(start uint, writer []byte, key string, pattern, options s
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -505,12 +536,14 @@ func (RegexNS) Element(start uint, writer []byte, key string, pattern, options s
 	n, err = CString.Encode(start, writer, pattern)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = CString.Encode(start, writer, options)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -525,6 +558,7 @@ func (DBPointerNS) Encode(start uint, writer []byte, ns string, oid [12]byte) (i
 
 	written, err := String.Encode(start, writer, ns)
 	total += written
+
 	if err != nil {
 		return total, err
 	}
@@ -543,6 +577,7 @@ func (DBPointerNS) Element(start uint, writer []byte, key string, ns string, oid
 	n, err := Byte.Encode(start, writer, '\x0C')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -550,18 +585,19 @@ func (DBPointerNS) Element(start uint, writer []byte, key string, ns string, oid
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = DBPointer.Encode(start, writer, ns, oid)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	return total, nil
-
 }
 
 // Encode encodes a JavaScript string into a BSON JavaScript element and serializes the bytes to the
@@ -578,6 +614,7 @@ func (JavaScriptNS) Element(start uint, writer []byte, key string, code string) 
 	n, err := Byte.Encode(start, writer, '\x0D')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -585,12 +622,14 @@ func (JavaScriptNS) Element(start uint, writer []byte, key string, code string) 
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = JavaScript.Encode(start, writer, code)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -612,6 +651,7 @@ func (SymbolNS) Element(start uint, writer []byte, key string, symbol string) (i
 	n, err := Byte.Encode(start, writer, '\x0E')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -619,12 +659,14 @@ func (SymbolNS) Element(start uint, writer []byte, key string, symbol string) (i
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Symbol.Encode(start, writer, symbol)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -641,6 +683,7 @@ func (CodeWithScopeNS) Encode(start uint, writer []byte, code string, doc []byte
 	n, err := Int32.Encode(start, writer, 9+int32(len(code))+int32(len(doc)))
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -648,6 +691,7 @@ func (CodeWithScopeNS) Encode(start uint, writer []byte, code string, doc []byte
 	n, err = String.Encode(start, writer, code)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -666,6 +710,7 @@ func (CodeWithScopeNS) Element(start uint, writer []byte, key string, code strin
 	n, err := Byte.Encode(start, writer, '\x0F')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -673,12 +718,14 @@ func (CodeWithScopeNS) Element(start uint, writer []byte, key string, code strin
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = CodeWithScope.Encode(start, writer, code, scope)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -696,7 +743,6 @@ func (Int32NS) Encode(start uint, writer []byte, i int32) (int, error) {
 	binary.LittleEndian.PutUint32(writer[start:start+4], signed32ToUnsigned(i))
 
 	return 4, nil
-
 }
 
 // Element encodes an int32 and a key into a BSON int32 element and serializes the bytes to the
@@ -707,6 +753,7 @@ func (Int32NS) Element(start uint, writer []byte, key string, i int32) (int, err
 	n, err := Byte.Encode(start, writer, '\x10')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -714,12 +761,14 @@ func (Int32NS) Element(start uint, writer []byte, key string, i int32) (int, err
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Int32.Encode(start, writer, i)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -735,6 +784,7 @@ func (TimestampNS) Encode(start uint, writer []byte, t uint32, i uint32) (int, e
 	n, err := encodeUint32(start, writer, i)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -753,6 +803,7 @@ func (TimestampNS) Element(start uint, writer []byte, key string, t uint32, i ui
 	n, err := Byte.Encode(start, writer, '\x11')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -760,12 +811,14 @@ func (TimestampNS) Element(start uint, writer []byte, key string, t uint32, i ui
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Timestamp.Encode(start, writer, t, i)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -789,6 +842,7 @@ func (Int64NS) Element(start uint, writer []byte, key string, i int64) (int, err
 	n, err := Byte.Encode(start, writer, '\x12')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -796,12 +850,14 @@ func (Int64NS) Element(start uint, writer []byte, key string, i int64) (int, err
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Int64.Encode(start, writer, i)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -813,10 +869,12 @@ func (Int64NS) Element(start uint, writer []byte, key string, i int64) (int, err
 // provided writer.
 func (Decimal128NS) Encode(start uint, writer []byte, d decimal.Decimal128) (int, error) {
 	var total int
+
 	high, low := d.GetBytes()
 
 	written, err := encodeUint64(start, writer, low)
 	total += written
+
 	if err != nil {
 		return total, err
 	}
@@ -835,6 +893,7 @@ func (Decimal128NS) Element(start uint, writer []byte, key string, d decimal.Dec
 	n, err := Byte.Encode(start, writer, '\x13')
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -842,12 +901,14 @@ func (Decimal128NS) Element(start uint, writer []byte, key string, d decimal.Dec
 	n, err = CString.Encode(start, writer, key)
 	start += uint(n)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
 
 	n, err = Decimal128.Encode(start, writer, d)
 	total += n
+
 	if err != nil {
 		return total, err
 	}
@@ -899,7 +960,6 @@ func encodeUint32(start uint, writer []byte, u uint32) (int, error) {
 	binary.LittleEndian.PutUint32(writer[start:], u)
 
 	return 4, nil
-
 }
 
 func encodeUint64(start uint, writer []byte, u uint64) (int, error) {
@@ -910,7 +970,6 @@ func encodeUint64(start uint, writer []byte, u uint64) (int, error) {
 	binary.LittleEndian.PutUint64(writer[start:], u)
 
 	return 8, nil
-
 }
 
 func signed32ToUnsigned(i int32) uint32 {

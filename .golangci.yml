@@ -1,12 +1,10 @@
----
-# TODO: cli.RunCMD() is excessively complicated and gocognit complains.
 linters:
   disable-all: true
   enable:
     - deadcode
     - errcheck
-    # - gocognit
     - goconst
+    - gocritic
     - gofmt
     - goimports
     - golint
@@ -21,13 +19,24 @@ linters:
     - typecheck
     - unconvert
     - varcheck
+    - stylecheck
+    - wsl
+    # - godox
+    - prealloc
+    - nakedret
 
 run:
   skip-dirs:
     - build
   max-same-issues: 100
   max-issues-per-linter: 100
-  exclude-use-default: true 
+  exclude-use-default: false
+  timeout: 10m
+
+linters-settings:
+  maligned:
+    suggest-new: true
+
 issues:
   exclude-rules:
     - linters:

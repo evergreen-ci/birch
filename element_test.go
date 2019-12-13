@@ -1728,7 +1728,6 @@ func TestElement(t *testing.T) {
 		elem.SetValue(VC.Int32(42))
 		assert.Equal(t, 42, elem.Value().Int())
 	})
-
 }
 
 func testConvertValueToElem(t *testing.T) {

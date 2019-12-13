@@ -20,6 +20,7 @@ func (d *Document) UnmarshalDocument(in *Document) error {
 	for iter.Next() {
 		d.Append(iter.Element())
 	}
+
 	return nil
 }
 
@@ -44,6 +45,7 @@ func (c Elements) Swap(i, j int) { c[i], c[j] = c[j], c[i] }
 func (c Elements) Less(i, j int) bool {
 	ik := c[i].Key()
 	jk := c[j].Key()
+
 	if ik != jk {
 		return ik < jk
 	}
@@ -77,6 +79,7 @@ func (c Elements) Copy() Elements {
 	for idx := range c {
 		out[idx] = c[idx]
 	}
+
 	return out
 }
 
@@ -88,6 +91,7 @@ func (d *Document) Sorted() *Document {
 	elems := d.Elements().Copy()
 
 	sort.Stable(elems)
+
 	return DC.Elements(elems...)
 }
 
@@ -96,9 +100,11 @@ func (d *Document) LookupElement(key string) *Element {
 	for iter.Next() {
 		elem := iter.Element()
 		elemKey, ok := elem.KeyOK()
+
 		if !ok {
 			continue
 		}
+
 		if elemKey == key {
 			return elem
 		}
@@ -112,6 +118,7 @@ func (d *Document) Lookup(key string) *Value {
 	if elem == nil {
 		return nil
 	}
+
 	return elem.value
 }
 

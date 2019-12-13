@@ -1285,5 +1285,4 @@ func TestDocumentConstructor(t *testing.T) {
 			})
 		}
 	})
-
 }

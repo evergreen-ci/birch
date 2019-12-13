@@ -58,7 +58,8 @@ func (a *Array) Reset() {
 // Validate ensures that the array's underlying BSON is valid. It returns the the number of bytes
 // in the underlying BSON if it is valid or an error if it isn't.
 func (a *Array) Validate() (uint32, error) {
-	var size uint32 = 4 + 1
+	size := uint32(4 + 1)
+
 	for i, elem := range a.doc.elems {
 		n, err := elem.value.validate(false)
 		if err != nil {
@@ -159,7 +160,9 @@ func (a *Array) AppendInterfaceErr(elem interface{}) error {
 	if err != nil {
 		return errors.WithStack(err)
 	}
+
 	a.doc.Append(e)
+
 	return nil
 }
 
@@ -208,13 +211,17 @@ func (a *Array) Delete(index uint) *Value {
 // String implements the fmt.Stringer interface.
 func (a *Array) String() string {
 	var buf bytes.Buffer
+
 	buf.Write([]byte("bson.Array["))
+
 	for idx, elem := range a.doc.elems {
 		if idx > 0 {
 			buf.Write([]byte(", "))
 		}
+
 		fmt.Fprintf(&buf, "%s", elem.value.Interface())
 	}
+
 	buf.WriteByte(']')
 
 	return buf.String()
@@ -224,14 +231,17 @@ func (a *Array) String() string {
 // at the given start position.
 func (a *Array) writeByteSlice(start uint, size uint32, b []byte) (int64, error) {
 	var total int64
-	var pos = start
+
+	pos := start
 
 	if len(b) < int(start)+int(size) {
 		return 0, newErrTooSmall()
 	}
+
 	n, err := elements.Int32.Encode(start, b, int32(size))
 	total += int64(n)
 	pos += uint(n)
+
 	if err != nil {
 		return total, err
 	}
@@ -250,6 +260,7 @@ func (a *Array) writeByteSlice(start uint, size uint32, b []byte) (int64, error)
 		n, err := elem.writeElement(false, pos, b)
 		total += n
 		pos += uint(n)
+
 		if err != nil {
 			return total, err
 		}
@@ -257,9 +268,11 @@ func (a *Array) writeByteSlice(start uint, size uint32, b []byte) (int64, error)
 
 	n, err = elements.Byte.Encode(pos, b, '\x00')
 	total += int64(n)
+
 	if err != nil {
 		return total, err
 	}
+
 	return total, nil
 }
 
@@ -269,11 +282,13 @@ func (a *Array) MarshalBSON() ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	b := make([]byte, size)
-	_, err = a.writeByteSlice(0, size, b)
-	if err != nil {
+
+	if _, err = a.writeByteSlice(0, size, b); err != nil {
 		return nil, err
 	}
+
 	return b, nil
 }
 
