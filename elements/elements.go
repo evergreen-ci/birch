@@ -160,6 +160,10 @@ func (StringNS) Encode(start uint, writer []byte, s string) (int, error) {
 	}
 
 	written, err = CString.Encode(start+uint(total), writer, s)
+	if err != nil {
+		return total, err
+	}
+
 	total += written
 
 	return total, nil
@@ -376,7 +380,6 @@ func (ObjectIDNS) Element(start uint, writer []byte, key string, oid [12]byte) (
 	}
 
 	n, err = ObjectID.Encode(start, writer, oid)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -421,7 +424,6 @@ func (BooleanNS) Element(start uint, writer []byte, key string, b bool) (int, er
 	}
 
 	n, err = Boolean.Encode(start, writer, b)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -456,7 +458,6 @@ func (DatetimeNS) Element(start uint, writer []byte, key string, dt int64) (int,
 	}
 
 	n, err = DateTime.Encode(start, writer, dt)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -509,7 +510,6 @@ func (RegexNS) Element(start uint, writer []byte, key string, pattern, options s
 	}
 
 	n, err = CString.Encode(start, writer, options)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -555,7 +555,6 @@ func (DBPointerNS) Element(start uint, writer []byte, key string, ns string, oid
 	}
 
 	n, err = DBPointer.Encode(start, writer, ns, oid)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -591,7 +590,6 @@ func (JavaScriptNS) Element(start uint, writer []byte, key string, code string) 
 	}
 
 	n, err = JavaScript.Encode(start, writer, code)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -626,7 +624,6 @@ func (SymbolNS) Element(start uint, writer []byte, key string, symbol string) (i
 	}
 
 	n, err = Symbol.Encode(start, writer, symbol)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -681,7 +678,6 @@ func (CodeWithScopeNS) Element(start uint, writer []byte, key string, code strin
 	}
 
 	n, err = CodeWithScope.Encode(start, writer, code, scope)
-	start += uint(n)
 	total += n
 	if err != nil {
 		return total, err
@@ -744,7 +740,6 @@ func (TimestampNS) Encode(start uint, writer []byte, t uint32, i uint32) (int, e
 	}
 
 	n, err = encodeUint32(start, writer, t)
-	start += uint(n)
 	total += n
 
 	return total, err

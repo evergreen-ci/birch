@@ -14,8 +14,8 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/google/go-cmp/cmp"
 	"github.com/evergreen-ci/birch/bsonerr"
+	"github.com/google/go-cmp/cmp"
 	"github.com/stretchr/testify/require"
 )
 
@@ -564,5 +564,5 @@ func readerElementComparer(e1, e2 *Element) bool {
 }
 
 func fromElement(e *Element) *Element {
-	return (*Element)(e)
+	return e
 }

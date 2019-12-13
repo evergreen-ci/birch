@@ -15,7 +15,7 @@ type DocumentConstructor struct{}
 func (DocumentConstructor) New() *Document { return DC.Make(0) }
 
 // Make returns a document with the underlying storage
-// allocated as specified. Provides some efficency when building
+// allocated as specified. Provides some efficiency when building
 // larger documents iteratively.
 func (DocumentConstructor) Make(n int) *Document {
 	return &Document{
