@@ -447,9 +447,17 @@ func (d *Document) Iterator() Iterator {
 	return newIterator(d)
 }
 
-func (d *Document) Extend(d2 *Document) *Document   { d.Append(d2.elems...); return d }
+// Extend merges a second document into the document. It may produce a
+// document with duplicate keys.
+func (d *Document) Extend(d2 *Document) *Document { d.Append(d2.elems...); return d }
+
+// ExtendReader merges the contents of a document in the form of a
+// reader (byte slice) into the document. May result in a document
+// with duplicate keys.
 func (d *Document) ExtendReader(r Reader) *Document { d.Append(DC.Reader(r).elems...); return d }
 
+// ExtendInterface constructs a document using the interace
+// constructor method
 func (d *Document) ExtendInterface(in interface{}) *Document {
 	d.Append(DC.Interface(in).elems...)
 	return d

@@ -38,6 +38,8 @@ func (d *Document) ExportMap() map[string]interface{} {
 	return out
 }
 
+// Elements is a representation of a slice of elements, and implements
+// the sort.Interface to support ordering the keys of a document.
 type Elements []*Element
 
 func (c Elements) Len() int      { return len(c) }
@@ -74,6 +76,9 @@ func (c Elements) Less(i, j int) bool {
 		return false
 	}
 }
+
+// Copy returns a new Elements slice with the same underlying
+// Elements. The copy is "shallow."
 func (c Elements) Copy() Elements {
 	out := make(Elements, len(c))
 	for idx := range c {
@@ -83,10 +88,15 @@ func (c Elements) Copy() Elements {
 	return out
 }
 
+// Elements provides access to a slice of the Elements in the
+// document. Mutating this list will mutate the content of the
+// document.
 func (d *Document) Elements() Elements {
 	return d.elems
 }
 
+// Sorted returns a new document containing a (shallow copy) of the
+// elements from the source document ordered according to their value.
 func (d *Document) Sorted() *Document {
 	elems := d.Elements().Copy()
 
@@ -95,6 +105,10 @@ func (d *Document) Sorted() *Document {
 	return DC.Elements(elems...)
 }
 
+// LookupElement iterates through the elements in a document looking
+// for one with the correct key and returns that element. It is NOT
+// recursive. When the element is not defined, the return value
+// is nil.
 func (d *Document) LookupElement(key string) *Element {
 	iter := d.Iterator()
 	for iter.Next() {
@@ -113,6 +127,10 @@ func (d *Document) LookupElement(key string) *Element {
 	return nil
 }
 
+// Lookup iterates through the elements in a document looking
+// for one with the correct key and returns the value for that key. It
+// is NOT recursive. When the element is not defined, the return value
+// is nil.
 func (d *Document) Lookup(key string) *Value {
 	elem := d.LookupElement(key)
 	if elem == nil {
@@ -122,6 +140,10 @@ func (d *Document) Lookup(key string) *Value {
 	return elem.value
 }
 
+// LookupElementErr iterates through the elements in a document looking
+// for one with the correct key and returns the Element for that key. It
+// is NOT recursive. When the element is not defined, it returns a
+// ElementNotFound error.
 func (d *Document) LookupElementErr(key string) (*Element, error) {
 	elem := d.LookupElement(key)
 	if elem == nil {
@@ -131,6 +153,10 @@ func (d *Document) LookupElementErr(key string) (*Element, error) {
 	return elem, nil
 }
 
+// LookupErr iterates through the elements in a document looking
+// for one with the correct key and returns the value for that key. It
+// is NOT recursive. When the element is not defined, it returns a
+// ElementNotFound error.
 func (d *Document) LookupErr(key string) (*Value, error) {
 	elem := d.LookupElement(key)
 	if elem == nil {

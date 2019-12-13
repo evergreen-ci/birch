@@ -40,6 +40,8 @@ type Value struct {
 	d *Document
 }
 
+// Copy constructs an entirely new valueobject with the same data as
+// the original.
 func (v *Value) Copy() *Value {
 	return &Value{
 		start:  v.start,
@@ -1023,6 +1025,9 @@ func (v *Value) getUint64() uint64 {
 	return binary.LittleEndian.Uint64(v.data[v.offset : v.offset+8])
 }
 
+// Int returns a flexible integer value, from an underlying bson value
+// that is either an int32 or an int64. Int() panics if the value is
+// a different type.
 func (v *Value) Int() int {
 	if val, ok := v.Int32OK(); ok {
 		return int(val)
@@ -1035,6 +1040,10 @@ func (v *Value) Int() int {
 	panic(bsonerr.NewElementTypeError("int", bsontype.Type(v.data[v.start])))
 }
 
+// IntOK returns a flexible integer value from an underlying bson
+// value that is either an int32 or int64. The second value is false
+// when the underlying type is a different type, or the value is
+// invalid.
 func (v *Value) IntOK() (int, bool) {
 	if v == nil || v.offset == 0 || v.data == nil {
 		return 0, false

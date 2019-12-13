@@ -8,10 +8,13 @@ import (
 	"github.com/pkg/errors"
 )
 
+// DC is a convenience variable provided for access to the DocumentConstructor methods.
 var DC DocumentConstructor
 
+// DocumentConstructor is used as a namespace for document constructor functions.
 type DocumentConstructor struct{}
 
+// New returns an empty document.
 func (DocumentConstructor) New() *Document { return DC.Make(0) }
 
 // Make returns a document with the underlying storage
@@ -24,10 +27,15 @@ func (DocumentConstructor) Make(n int) *Document {
 	}
 }
 
+// Elements returns a document initialized with the elements passed as
+// arguments.
 func (DocumentConstructor) Elements(elems ...*Element) *Document {
 	return DC.Make(len(elems)).Append(elems...)
 }
 
+// Reader constructs a document from a bson reader, which is a wrapper
+// around a byte slice representation of a bson document. Reader
+// panics if there is a problem reading the document.
 func (DocumentConstructor) Reader(r Reader) *Document {
 	doc, err := DC.ReaderErr(r)
 	if err != nil {
@@ -37,6 +45,15 @@ func (DocumentConstructor) Reader(r Reader) *Document {
 	return doc
 }
 
+// ReaderErr constructs a document from a bson reader, which is a wrapper
+// around a byte slice representation of a bson document. Reader
+// returns an error if there is a problem reading the document.
+func (DocumentConstructor) ReaderErr(r Reader) (*Document, error) {
+	return ReadDocument(r)
+}
+
+// ReadFrom builds a document reading a bytes sequence from an
+// io.Reader, panicing if there's a problem reading from the reader.
 func (DocumentConstructor) ReadFrom(in io.Reader) *Document {
 	doc, err := DC.ReadFromErr(in)
 	if err == io.EOF {
@@ -50,6 +67,9 @@ func (DocumentConstructor) ReadFrom(in io.Reader) *Document {
 	return doc
 }
 
+// ReadFromErr builds a document reading a bytes sequence from an
+// io.Reader, returning an error if there's a problem reading from the
+// reader.
 func (DocumentConstructor) ReadFromErr(in io.Reader) (*Document, error) {
 	doc := DC.New()
 
@@ -63,10 +83,6 @@ func (DocumentConstructor) ReadFromErr(in io.Reader) (*Document, error) {
 	}
 
 	return doc, nil
-}
-
-func (DocumentConstructor) ReaderErr(r Reader) (*Document, error) {
-	return ReadDocument(r)
 }
 
 func (DocumentConstructor) Marshaler(in Marshaler) *Document {

@@ -32,7 +32,8 @@ func newElement(start uint32, offset uint32) *Element {
 	return &Element{&Value{start: start, offset: offset}}
 }
 
-// Clone creates a of the element/
+// Copy creates a new Element which has a copy of the content from
+// original value, but is otherwise entirely independent.
 func (e *Element) Copy() *Element {
 	return &Element{e.value.Copy()}
 }
@@ -108,6 +109,8 @@ func (e *Element) Key() string {
 	return key
 }
 
+// KeyOK returns the key of the document, return a false OK value if
+// the element is uninitialized.
 func (e *Element) KeyOK() (string, bool) {
 	if e == nil || e.value == nil || e.value.offset == 0 || e.value.data == nil {
 		return "", false

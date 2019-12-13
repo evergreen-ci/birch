@@ -78,16 +78,12 @@ func (a *Array) Validate() (uint32, error) {
 }
 
 // Lookup returns the value in the array at the given index or an error if it cannot be found.
-//
-// TODO: We should fix this to align with the semantics of the *Document type,
-// e.g. have Lookup return just a *Value or panic if it's out of bounds and have
-// a LookupOK that returns a bool. Although if we want to align with the
-// semantics of how Go arrays and slices work, we would not provide a LookupOK
-// and force users to use the Len method before hand to avoid panics.
 func (a *Array) Lookup(index uint) *Value {
 	return a.doc.ElementAt(index).value
 }
 
+// LookupErr returns the value at the specified index, returning an
+// OutOfBounds error if that element doesn't exist.
 func (a *Array) LookupErr(index uint) (*Value, error) {
 	v, ok := a.doc.ElementAtOK(index)
 	if !ok {
@@ -97,6 +93,8 @@ func (a *Array) LookupErr(index uint) (*Value, error) {
 	return v.value, nil
 }
 
+// LookupElementErr returns the element at the specified index,
+// returning an OutOfBounds error if that element doesn't exist.
 func (a *Array) LookupElementErr(index uint) (*Element, error) {
 	v, ok := a.doc.ElementAtOK(index)
 	if !ok {
@@ -106,8 +104,15 @@ func (a *Array) LookupElementErr(index uint) (*Element, error) {
 	return v, nil
 }
 
+// LookupElement returns the element at the specified index, panicing
+// if that index does not exist
 func (a *Array) LookupElement(index uint) *Element {
-	return a.doc.ElementAt(index)
+	v, ok := a.doc.ElementAtOK(index)
+	if !ok {
+		panic(bsonerr.OutOfBounds)
+	}
+
+	return v
 }
 
 func (a *Array) lookupTraverse(index uint, keys ...string) (*Value, error) {
@@ -193,7 +198,12 @@ func (a *Array) Set(index uint, value *Value) *Array {
 	return a
 }
 
-func (a *Array) Extend(ar2 *Array) *Array                { a.doc.Append(ar2.doc.elems...); return a }
+// Extend adds the values from the second array to the first array,
+// returning the original array for chaining.
+func (a *Array) Extend(ar2 *Array) *Array { a.doc.Append(ar2.doc.elems...); return a }
+
+// ExtendFromDocument adds the values from the elements in the
+// document returning the array for chaining.
 func (a *Array) ExtendFromDocument(doc *Document) *Array { a.doc.Append(doc.elems...); return a }
 
 // Delete removes the value at the given index from the array.

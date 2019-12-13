@@ -25,7 +25,7 @@ var VC ValueConstructor
 // ElementConstructor is used as a namespace for document element constructor functions.
 type ElementConstructor struct{}
 
-// ValueConstructor is used as a namespace for document element constructor functions.
+// ValueConstructor is used as a namespace for value constructor functions.
 type ValueConstructor struct{}
 
 // Interface will attempt to turn the provided key and value into an Element.
@@ -637,6 +637,8 @@ func (ElementConstructor) Value(key string, value *Value) *Element {
 	return convertValueToElem(key, value)
 }
 
+// ValueErr constructs an element using the specified value, but
+// returns an error if the value is nil or otherwise invalid.
 func (ElementConstructor) ValueErr(key string, value *Value) (*Element, error) {
 	elem := EC.Value(key, value)
 	if elem == nil {
