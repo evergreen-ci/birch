@@ -1,13 +1,45 @@
-package juniper
+package jsonx
+
+import (
+	"io"
+	"io/ioutil"
+
+	"github.com/pkg/errors"
+)
 
 type DocumentConstructor struct{}
 
 var DC = DocumentConstructor{}
 
-func (DocumentConstructor) New() *Document       { return DC.Make(0) }
-func (DocumentConstructor) Make(n int) *Document { return &Document{elems: make([]*Element, 0, n)} }
+func (DocumentConstructor) New() *Document            { return DC.Make(0) }
+func (DocumentConstructor) Make(n int) *Document      { return &Document{elems: make([]*Element, 0, n)} }
+func (DocumentConstructor) Bytes(in []byte) *Document { return docConstructorOrPanic(DC.BytesErr(in)) }
+
+func (DocumentConstructor) Reader(in io.Reader) *Document {
+	return docConstructorOrPanic(DC.ReaderErr(in))
+}
+
 func (DocumentConstructor) Elements(elems ...*Element) *Document {
 	return DC.Make(len(elems)).Append(elems...)
+}
+
+func (DocumentConstructor) BytesErr(in []byte) (*Document, error) {
+	d := DC.New()
+
+	if err := d.UnmarshalJSON(in); err != nil {
+		return nil, err
+	}
+
+	return d, nil
+}
+
+func (DocumentConstructor) ReaderErr(in io.Reader) (*Document, error) {
+	buf, err := ioutil.ReadAll(in)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return DC.BytesErr(buf)
 }
 
 type ArrayConstructor struct{}
@@ -17,6 +49,26 @@ var AC = ArrayConstructor{}
 func (ArrayConstructor) New() *Array                     { return AC.Make(0) }
 func (ArrayConstructor) Make(n int) *Array               { return &Array{elems: make([]*Value, 0, n)} }
 func (ArrayConstructor) Elements(elems ...*Value) *Array { return AC.Make(len(elems)).Append(elems...) }
+func (ArrayConstructor) Bytes(in []byte) *Array          { return arrayConstructorOrPanic(AC.BytesErr(in)) }
+func (ArrayConstructor) Reader(in io.Reader) *Array      { return arrayConstructorOrPanic(AC.ReaderErr(in)) }
+
+func (ArrayConstructor) BytesErr(in []byte) (*Array, error) {
+	a := AC.New()
+	if err := a.UnmarshalJSON(in); err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return a, nil
+}
+
+func (ArrayConstructor) ReaderErr(in io.Reader) (*Array, error) {
+	buf, err := ioutil.ReadAll(in)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return AC.BytesErr(buf)
+}
 
 type ElementConstructor struct{}
 
@@ -78,6 +130,26 @@ type ValueConstructor struct{}
 
 var VC = ValueConstructor{}
 
+func (ValueConstructor) Bytes(in []byte) *Value { return valueConstructorOrPanic(VC.BytesErr(in)) }
+func (ValueConstructor) BytesErr(in []byte) (*Value, error) {
+	val := &Value{}
+
+	if err := val.UnmarshalJSON(in); err != nil {
+		return nil, errors.WithStack(err)
+	}
+	return val, nil
+}
+
+func (ValueConstructor) Reader(in io.Reader) *Value { return valueConstructorOrPanic(VC.ReaderErr(in)) }
+func (ValueConstructor) ReaderErr(in io.Reader) (*Value, error) {
+	buf, err := ioutil.ReadAll(in)
+	if err != nil {
+		return nil, errors.WithStack(err)
+	}
+
+	return VC.BytesErr(buf)
+}
+
 func (ValueConstructor) String(s string) *Value {
 	return &Value{
 		t:     String,
@@ -87,35 +159,35 @@ func (ValueConstructor) String(s string) *Value {
 
 func (ValueConstructor) Int(n int) *Value {
 	return &Value{
-		t:     Integer,
+		t:     NumberInteger,
 		value: n,
 	}
 }
 
 func (ValueConstructor) Int32(n int32) *Value {
 	return &Value{
-		t:     Integer,
+		t:     NumberInteger,
 		value: n,
 	}
 }
 
 func (ValueConstructor) Int64(n int64) *Value {
 	return &Value{
-		t:     Integer,
+		t:     NumberInteger,
 		value: n,
 	}
 }
 
 func (ValueConstructor) Float64(n float64) *Value {
 	return &Value{
-		t:     Double,
+		t:     NumberDouble,
 		value: n,
 	}
 }
 
 func (ValueConstructor) Float32(n float32) *Value {
 	return &Value{
-		t:     Double,
+		t:     NumberDouble,
 		value: n,
 	}
 }

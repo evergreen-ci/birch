@@ -1,4 +1,4 @@
-package juniper
+package internal
 
 import (
 	"encoding/json"
@@ -25,17 +25,6 @@ const (
 	True
 	// JSON is a raw block of JSON
 	JSON
-
-	// Bool is a boolean value that is either true or false
-	Bool
-
-	// Integer and Double provide extended type data for internal
-	// purposes.
-	Integer
-	Double
-
-	ObjectValue
-	ArrayValue
 )
 
 // String returns a string representation of the type.

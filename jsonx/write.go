@@ -1,4 +1,6 @@
-package juniper
+package jsonx
+
+// code in this file from: https://github.com/json-iterator/go/blob/master/stream_str.go
 
 import "unicode/utf8"
 

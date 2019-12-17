@@ -1,4 +1,4 @@
-package juniper
+package jsonx
 
 import (
 	"encoding/json"
@@ -6,37 +6,6 @@ import (
 
 	"github.com/pkg/errors"
 )
-
-type Array struct {
-	elems []*Value
-}
-
-func (a *Array) Append(vals ...*Value) *Array { a.elems = append(a.elems, vals...); return a }
-func (a *Array) Len() int                     { return len(a.elems) }
-
-type Document struct {
-	elems []*Element
-}
-
-func (d *Document) Append(elems ...*Element) *Document { d.elems = append(d.elems, elems...); return d }
-func (d *Document) Len() int                           { return len(d.elems) }
-
-type Element struct {
-	key   string
-	value *Value
-}
-
-func (e *Element) Key() string             { return e.key }
-func (e *Element) Value() *Value           { return e.value }
-func (e *Element) ValueOK() (*Value, bool) { return e.value, e.value != nil }
-
-type Value struct {
-	t     Type
-	value interface{}
-}
-
-func (v *Value) Type() Type             { return v.t }
-func (v *Value) Interface() interface{} { return v.value }
 
 func (d *Document) MarshalJSON() ([]byte, error) {
 	if d == nil {
@@ -100,12 +69,12 @@ func (v *Value) MarshalJSON() ([]byte, error) {
 	switch v.t {
 	case String:
 		return writeJSONString([]byte(fmt.Sprintf(`%s`, v.value))), nil
-	case Double, Integer, Number:
+	case NumberDouble, NumberInteger, Number:
 		switch v.value.(type) {
 		case int64, int32, int:
 			return []byte(fmt.Sprintf(`%d`, v.value)), nil
 		case float64, float32:
-			return []byte(fmt.Sprintf(`%d`, v.value)), nil
+			return []byte(fmt.Sprintf(`%f`, v.value)), nil
 		default:
 			return nil, errors.Errorf("unsupported number type %T", v.value)
 		}

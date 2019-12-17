@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/evergreen-ci/birch/types"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -48,9 +49,50 @@ func makeDocumentTestCases(depth int) []jsonDocumentTestCase {
 			Expected: `{"_id":{"$oid":"5df67fa01cbe64e51b598f18"}}`,
 		},
 		{
+			Name:     "RegularExpression",
+			Doc:      DC.Elements(EC.Regex("rex", ".*", "i")),
+			Expected: `{"rex":{"$regularExpression":{"pattern":".*","options":"i"}}}`,
+		},
+		{
 			Name:     "SimpleInt",
 			Doc:      DC.Elements(EC.Int("hello", 42)),
 			Expected: `{"hello":42}`,
+		},
+		{
+			Name:     "MaxKey",
+			Doc:      DC.Elements(EC.MaxKey("most")),
+			Expected: `{"most":{"$maxKey":1}}`,
+		},
+		{
+			Name:     "MinKey",
+			Doc:      DC.Elements(EC.MinKey("most")),
+			Expected: `{"most":{"$minKey":1}}`,
+		},
+		{
+			Name:     "Undefined",
+			Doc:      DC.Elements(EC.Undefined("kip")),
+			Expected: `{"kip":{"$undefined":true}}`,
+		},
+		{
+			Name:     "Code",
+			Doc:      DC.Elements(EC.JavaScript("js", "let out = map(function(k, v){})")),
+			Expected: `{"js":{"$code":"let out = map(function(k, v){})"}}`,
+		},
+		{
+			Name:     "CodeWithScope",
+			Doc:      DC.Elements(EC.CodeWithScope("js", "let out = map(function(k, v){v+a})", DC.Elements(EC.Int("a", 1)))),
+			Expected: `{"js":{"$code":"let out = map(function(k, v){v+a})","$scope":{"a":1}}}`,
+		},
+		{
+			Name:     "Symbol",
+			Doc:      DC.Elements(EC.Symbol("signified", "signifier")),
+			Expected: `{"signified":{"$symbol":"signifier"}}`,
+		},
+		{
+
+			Name:     "MDBTimeStamp",
+			Doc:      DC.Elements(EC.Timestamp("mdbts", uint32(now.Unix()), 1)),
+			Expected: fmt.Sprintf(`{"mdbts":{"$timestamp":{"t":%d,"i":1}}}`, now.Unix()),
 		},
 		{
 			Name:     "SimpleInt64",
@@ -308,5 +350,68 @@ func TestJSON(t *testing.T) {
 		})
 	})
 	t.Run("Unmarshal", func(t *testing.T) {
+		t.Run("Document", func(t *testing.T) {
+			for _, test := range makeDocumentTestCases(0) {
+				if test.ShouldSkip {
+					continue
+				}
+
+				t.Run(test.Name, func(t *testing.T) {
+					doc := DC.New()
+					err := doc.UnmarshalJSON([]byte(test.Expected))
+					require.NoError(t, err)
+					iter := doc.Iterator()
+					for iter.Next() {
+						elem := iter.Element()
+						expected, err := test.Doc.LookupErr(elem.Key())
+						require.NoError(t, err)
+						assert.True(t, elem.Value().Equal(expected), "[%s] %s != %s",
+							test.Expected,
+							expected.Interface(), elem.Value().Interface())
+					}
+					require.NoError(t, iter.Err())
+				})
+			}
+		})
+		t.Run("Array", func(t *testing.T) {
+			for _, test := range makeArrayTestCases(0) {
+				if test.ShouldSkip {
+					continue
+				}
+
+				t.Run(test.Name, func(t *testing.T) {
+					array := NewArray()
+					err := array.UnmarshalJSON([]byte(test.Expected))
+					require.NoError(t, err)
+
+					iter := array.Iterator()
+					idx := uint(0)
+					for iter.Next() {
+						elem := iter.Value()
+						expected, err := test.Array.LookupErr(idx)
+						require.NoError(t, err)
+						assert.True(t, elem.Equal(expected))
+						idx++
+					}
+					require.NoError(t, iter.Err())
+				})
+			}
+		})
+		t.Run("Value", func(t *testing.T) {
+			for _, test := range makeValueTestCases(0) {
+				if test.ShouldSkip {
+					continue
+				}
+
+				t.Run(test.Name, func(t *testing.T) {
+					value := &Value{}
+					err := value.UnmarshalJSON([]byte(test.Expected))
+					require.NoError(t, err)
+
+					assert.True(t, value.Equal(test.Val))
+				})
+			}
+		})
+
 	})
 }
