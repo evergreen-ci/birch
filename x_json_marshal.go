@@ -40,7 +40,6 @@ func (a *Array) toJSON() *jsonx.Array {
 	}
 	if iter.Err() != nil {
 		panic(iter.Err())
-		return nil
 	}
 
 	return out

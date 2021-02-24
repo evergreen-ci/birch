@@ -81,10 +81,7 @@ func (c Elements) Less(i, j int) bool {
 // Elements. The copy is "shallow."
 func (c Elements) Copy() Elements {
 	out := make(Elements, len(c))
-	for idx := range c {
-		out[idx] = c[idx]
-	}
-
+	copy(out, c)
 	return out
 }
 

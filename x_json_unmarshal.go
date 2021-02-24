@@ -154,16 +154,18 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				return nil, errors.New("invalid code document")
 			}
 
-			if second := indoc.KeyAtIndex(1); second == "" {
+			second := indoc.KeyAtIndex(1)
+			switch second {
+			case "":
 				return EC.JavaScript(in.Key(), js), nil
-			} else if second == "$scope" {
+			case "$scope":
 				scope, err := convertJSONElements(indoc.ElementAtIndex(1))
 				if err != nil {
 					return nil, errors.WithStack(err)
 				}
 
 				return EC.CodeWithScope(in.Key(), js, scope.Value().MutableDocument()), nil
-			} else {
+			default:
 				return nil, errors.Errorf("invalid key '%s' in code with scope for %s", second, in.Key())
 			}
 		case "$dbPointer":

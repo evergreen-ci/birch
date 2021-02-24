@@ -20,8 +20,6 @@ linters:
     - unconvert
     - varcheck
     - stylecheck
-    - wsl
-    # - godox
     - prealloc
     - nakedret
 
