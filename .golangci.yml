@@ -12,7 +12,6 @@ linters:
     - govet
     - ineffassign
     - interfacer
-    - maligned
     - misspell
     - staticcheck
     - structcheck
@@ -31,9 +30,10 @@ run:
   exclude-use-default: false
   timeout: 10m
 
-linters-settings:
-  maligned:
-    suggest-new: true
+linter-settings:
+  govet:
+    enable:
+      - fieldalignment
 
 issues:
   exclude-rules:
