@@ -2,9 +2,9 @@ name := birch
 buildDir := build
 srcFiles := $(shell find . -name "*.go" -not -path "./$(buildDir)/*" -not -name "*_test.go" -not -path "*\#*")
 testFiles := $(shell find . -name "*.go" -not -path "./$(buildDir)/*" -not -path "*\#*")
-compilePackages := $(subst $(name),,$(subst -,/,$(foreach target,$(allPackages),./$(target))))
 testPackages := $(name) bsontype
 allPackages := $(name) bsonerr bsontype elements
+compilePackages := $(subst $(name),,$(subst -,/,$(foreach target,$(allPackages),./$(target))))
 lintPackages := $(allPackages)
 projectPath := github.com/evergreen-ci/birch
 
