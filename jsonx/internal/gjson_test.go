@@ -8,6 +8,8 @@ import (
 	"strconv"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/require"
 )
 
 // TestRandomData is a fuzzing test that throws random data at the Parse
@@ -29,9 +31,9 @@ func TestRandomData(t *testing.T) {
 			t.Fatal(err)
 		}
 		lstr = string(b[:n])
-		if _, err = Parse(lstr); err != nil {
-			t.Fatal(err)
-		}
+		require.NotPanics(t, func() {
+			_, _ = Parse(lstr)
+		})
 	}
 }
 
@@ -215,7 +217,7 @@ var complicatedJSON = `
 	"nestedTagged": {
 		"Green": "Green",
 		"Map": {
-			"this": "that", 
+			"this": "that",
 			"and": "the other thing"
 		},
 		"Ints": {
