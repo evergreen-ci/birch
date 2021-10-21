@@ -58,7 +58,6 @@ func (d Decimal128) String() string {
 		// Bits: 1*sign 2*ignored 14*exponent 111*significand.
 		// Implicit 0b100 prefix in significand.
 		e = int(d.h>>47&(1<<14-1)) - 6176
-		//h = 4<<47 | d.h&(1<<47-1)
 		// Spec says all of these values are out of range.
 		h, l = 0, 0
 	} else {
@@ -152,7 +151,7 @@ func dErr(s string) (Decimal128, error) {
 	return dNaN, errors.Errorf("cannot parse %q as a decimal128", s)
 }
 
-//ParseDecimal128 takes the given string and attempts to parse it into a valid
+// ParseDecimal128 takes the given string and attempts to parse it into a valid
 // Decimal128 value.
 func ParseDecimal128(s string) (Decimal128, error) {
 	orig := s

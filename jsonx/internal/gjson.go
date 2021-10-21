@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"encoding/json"
 	"errors"
 	"strconv"
 	"time"
@@ -11,6 +10,8 @@ import (
 
 // Type is Result type
 type Type int
+
+const falseStr = "false"
 
 const (
 	// Null is a null json value
@@ -67,7 +68,7 @@ func (t Result) String() string {
 	default:
 		return ""
 	case False:
-		return "false"
+		return falseStr
 	case Number:
 		if len(t.Raw) == 0 {
 			// calculated result
@@ -100,7 +101,7 @@ func (t Result) Bool() bool {
 	case True:
 		return true
 	case String:
-		return t.Str != "" && t.Str != "0" && t.Str != "false"
+		return t.Str != "" && t.Str != "0" && t.Str != falseStr
 	case Number:
 		return t.Num != 0
 	}
@@ -710,38 +711,6 @@ func parseLiteral(json string, i int) (int, string) {
 	return i, json[s:]
 }
 
-type arrayPathResult struct {
-	part    string
-	path    string
-	pipe    string
-	piped   bool
-	more    bool
-	alogok  bool
-	arrch   bool
-	alogkey string
-	query   struct {
-		on    bool
-		path  string
-		op    string
-		value string
-		all   bool
-	}
-}
-
-func trim(s string) string {
-left:
-	if len(s) > 0 && s[0] <= ' ' {
-		s = s[1:]
-		goto left
-	}
-right:
-	if len(s) > 0 && s[len(s)-1] <= ' ' {
-		s = s[:len(s)-1]
-		goto right
-	}
-	return s
-}
-
 // ParseLines iterates through lines of JSON as specified by the JSON Lines
 // format (http://jsonlines.org/).
 // Each line is returned as a GJSON Result.
@@ -766,61 +735,6 @@ func forEachLine(json string, iterator func(line Result) bool) {
 			return
 		}
 	}
-}
-
-type subSelector struct {
-	name string
-	path string
-}
-
-// nameOfLast returns the name of the last component
-func nameOfLast(path string) string {
-	for i := len(path) - 1; i >= 0; i-- {
-		if path[i] == '|' || path[i] == '.' {
-			if i > 0 {
-				if path[i-1] == '\\' {
-					continue
-				}
-			}
-			return path[i+1:]
-		}
-	}
-	return path
-}
-
-func isSimpleName(component string) bool {
-	for i := 0; i < len(component); i++ {
-		if component[i] < ' ' {
-			return false
-		}
-		switch component[i] {
-		case '[', ']', '{', '}', '(', ')', '#', '|':
-			return false
-		}
-	}
-	return true
-}
-
-func appendJSONString(dst []byte, s string) []byte {
-	for i := 0; i < len(s); i++ {
-		if s[i] < ' ' || s[i] == '\\' || s[i] == '"' || s[i] > 126 {
-			d, _ := json.Marshal(s)
-			return append(dst, string(d)...)
-		}
-	}
-	dst = append(dst, '"')
-	dst = append(dst, s...)
-	dst = append(dst, '"')
-	return dst
-}
-
-type parseContext struct {
-	json  string
-	value Result
-	pipe  string
-	piped bool
-	calcd bool
-	lines bool
 }
 
 // runeit returns the rune from the the \uXXXX
@@ -998,12 +912,6 @@ func parseSquash(json string, i int) (int, string) {
 	}
 	return i, json[s:]
 }
-
-var ( // used for testing
-	testWatchForFallback bool
-)
-
-var validate uintptr = 1
 
 func validpayload(data []byte, i int) (outi int, ok bool) {
 	for ; i < len(data); i++ {

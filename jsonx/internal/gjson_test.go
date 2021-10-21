@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/hex"
 	"encoding/json"
-	"fmt"
 	"math/rand"
 	"strconv"
 	"testing"
@@ -30,47 +29,11 @@ func TestRandomData(t *testing.T) {
 			t.Fatal(err)
 		}
 		lstr = string(b[:n])
-		Parse(lstr)
+		if _, err = Parse(lstr); err != nil {
+			t.Fatal(err)
+		}
 	}
 }
-
-// this json block is poorly formed on purpose.
-var basicJSON = `{"age":100, "name":{"here":"B\\\"R"},
-	"noop":{"what is a wren?":"a bird"},
-	"happy":true,"immortal":false,
-	"items":[1,2,3,{"tags":[1,2,3],"points":[[1,2],[3,4]]},4,5,6,7],
-	"arr":["1",2,"3",{"hello":"world"},"4",5],
-	"vals":[1,2,3,{"sadf":sdf"asdf"}],"name":{"first":"tom","last":null},
-	"created":"2014-05-16T08:28:06.989Z",
-	"loggy":{
-		"programmers": [
-    	    {
-    	        "firstName": "Brett",
-    	        "lastName": "McLaughlin",
-    	        "email": "aaaa",
-				"tag": "good"
-    	    },
-    	    {
-    	        "firstName": "Jason",
-    	        "lastName": "Hunter",
-    	        "email": "bbbb",
-				"tag": "bad"
-    	    },
-    	    {
-    	        "firstName": "Elliotte",
-    	        "lastName": "Harold",
-    	        "email": "cccc",
-				"tag":, "good"
-    	    },
-			{
-				"firstName": 1002.3,
-				"age": 101
-			}
-    	]
-	},
-	"lastly":{"yay":"final"}
-}`
-var basicJSONB = []byte(basicJSON)
 
 func must(res Result, err error) Result {
 	if err != nil {
@@ -192,38 +155,15 @@ func TestUnmarshalMap(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if bytes.Compare(b1, b2) != 0 {
+	if !bytes.Equal(b1, b2) {
 		t.Fatal("b1 != b2")
 	}
 }
 
-var manyJSON = `  {
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{
-	"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"a":{"hello":"world"
-	}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}
-	"position":{"type":"Point","coordinates":[-115.24,33.09]},
-	"loves":["world peace"],
-	"name":{"last":"Anderson","first":"Nancy"},
-	"age":31
-	"":{"a":"emptya","b":"emptyb"},
-	"name.last":"Yellow",
-	"name.first":"Cat",
-}`
-
-func combine(results []Result) string {
-	return fmt.Sprintf("%v", results)
-}
-
 type ComplicatedType struct {
-	unsettable int
-	Tagged     string `json:"tagged"`
-	NotTagged  bool
-	Nested     struct {
+	Tagged    string `json:"tagged"`
+	NotTagged bool
+	Nested    struct {
 		Yellow string `json:"yellow"`
 	}
 	NestedTagged struct {
@@ -388,8 +328,8 @@ func TestValidBasic(t *testing.T) {
 	testvalid(t, `"a\\b\\\uFFAAa"`, true)
 	testvalid(t, `"a\\b\\\uFFAZa"`, false)
 	testvalid(t, `"a\\b\\\uFFA"`, false)
-	testvalid(t, string(complicatedJSON), true)
-	testvalid(t, string(exampleJSON), true)
+	testvalid(t, complicatedJSON, true)
+	testvalid(t, exampleJSON, true)
 }
 
 var jsonchars = []string{"{", "[", ",", ":", "}", "]", "1", "0", "true",
@@ -511,10 +451,6 @@ func randomObjectOrArray(keys []string, prefix string, array bool, depth int) (
 		json += "}"
 	}
 	return json, keys
-}
-
-func randomJSON() (json string, keys []string) {
-	return randomObjectOrArray(nil, "", false, 0)
 }
 
 func BenchmarkValid(b *testing.B) {

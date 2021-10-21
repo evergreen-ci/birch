@@ -138,7 +138,7 @@ func writeJSONString(s []byte) []byte {
 				continue
 			}
 			if start < i {
-				out = append(out, []byte(s[start:i])...)
+				out = append(out, s[start:i]...)
 			}
 			switch b {
 			case '\\', '"':
@@ -166,6 +166,6 @@ func writeJSONString(s []byte) []byte {
 		continue
 	}
 
-	out = append(out, []byte(s[start:])...)
+	out = append(out, s[start:]...)
 	return append(out, '"')
 }

@@ -11,7 +11,6 @@ type documentIterImpl struct {
 	idx     int
 	doc     *Document
 	current *Element
-	err     error
 }
 
 func (iter *documentIterImpl) Next() bool {
@@ -32,7 +31,6 @@ type arrayIterImpl struct {
 	idx     int
 	array   *Array
 	current *Value
-	err     error
 }
 
 func (iter *arrayIterImpl) Next() bool {
