@@ -233,15 +233,15 @@ func (r Reader) recursiveKeys(recursive bool, prefix ...string) (Keys, error) {
 		if recursive {
 			switch elem.value.Type() {
 			case '\x03':
-				recursivePrefix := append(prefix, key)
-				recurKeys, err := elem.value.ReaderDocument().recursiveKeys(recursive, recursivePrefix...)
+				prefix := append(prefix, key)
+				recurKeys, err := elem.value.ReaderDocument().recursiveKeys(recursive, prefix...)
 				if err != nil {
 					return err
 				}
 				ks = append(ks, recurKeys...)
 			case '\x04':
-				recursivePrefix := append(prefix, key)
-				recurKeys, err := elem.value.ReaderArray().recursiveKeys(recursive, recursivePrefix...)
+				prefix = append(prefix, key)
+				recurKeys, err := elem.value.ReaderArray().recursiveKeys(recursive, prefix...)
 				if err != nil {
 					return err
 				}

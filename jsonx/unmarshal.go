@@ -112,7 +112,8 @@ func getValueForResult(value internal.Result) (*Value, error) {
 		var err error
 		doc := DC.New()
 		value.ForEach(func(key, value internal.Result) bool {
-			val, err := getValueForResult(value)
+			var val *Value
+			val, err = getValueForResult(value)
 			if err != nil {
 				err = errors.Wrapf(err, "problem with subdocument at key %s", key.Str)
 				return false

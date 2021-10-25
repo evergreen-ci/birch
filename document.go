@@ -101,8 +101,8 @@ func (d *Document) recursiveKeys(recursive bool, prefix ...string) (Keys, error)
 		// scope document?
 		switch elem.value.Type() {
 		case '\x03':
-			subprefix := append(prefix, key)
-			subkeys, err := elem.value.MutableDocument().recursiveKeys(recursive, subprefix...)
+			prefix = append(prefix, key)
+			subkeys, err := elem.value.MutableDocument().recursiveKeys(recursive, prefix...)
 
 			if err != nil {
 				return nil, err
@@ -110,8 +110,8 @@ func (d *Document) recursiveKeys(recursive bool, prefix ...string) (Keys, error)
 
 			ks = append(ks, subkeys...)
 		case '\x04':
-			subprefix := append(prefix, key)
-			subkeys, err := elem.value.MutableArray().doc.recursiveKeys(recursive, subprefix...)
+			prefix := append(prefix, key)
+			subkeys, err := elem.value.MutableArray().doc.recursiveKeys(recursive, prefix...)
 
 			if err != nil {
 				return nil, err
