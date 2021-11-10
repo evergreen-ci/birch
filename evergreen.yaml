@@ -97,6 +97,16 @@ tasks:
     tags: ["report"]
     name: lint-types
 
+  - name: verify-mod-tidy
+    tags: ["report"]
+    commands:
+      - command: git.get_project
+        type: system
+        params:
+          directory: birch
+      - func: run-make
+        vars: { target: "${task_name}" }
+
 #######################################
 #           Buildvariants             #
 #######################################
