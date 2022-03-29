@@ -132,13 +132,13 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				case "t":
 					val, ok = elem.Value().IntOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding number for timestamp at %s [%T]", in.Key(), elem.Value().Interface())
+						return nil, errors.Errorf("decoding number for timestamp at key '%s' [%T]", in.Key(), elem.Value().Interface())
 					}
 					t = int64(val)
 				case "i":
 					val, ok = elem.Value().IntOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding number for timestamp at %s [%T]", in.Key(), elem.Value().Interface())
+						return nil, errors.Errorf("decoding number for timestamp at key '%s' [%T]", in.Key(), elem.Value().Interface())
 					}
 					i = int64(val)
 				}
@@ -187,12 +187,12 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				case "$ref":
 					ns, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding ns for dbref in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for dbref in %s", in.Key())
 					}
 				case "$id":
 					oid, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding ns for oid in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for oid in %s", in.Key())
 					}
 				}
 				count++
@@ -203,7 +203,7 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 
 			oidp, err := types.ObjectIDFromHex(oid)
 			if err != nil {
-				return nil, errors.Wrapf(err, "problem parsing oid from dbref at %s", in.Key())
+				return nil, errors.Wrapf(err, "parsing oid from dbref at %s", in.Key())
 			}
 
 			return EC.DBPointer(in.Key(), ns, oidp), nil
@@ -226,12 +226,12 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				case "pattern":
 					pattern, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding ns for dbref in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for dbref in %s", in.Key())
 					}
 				case "options":
 					options, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("problem decoding ns for oid in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for oid in %s", in.Key())
 					}
 				}
 				count++

@@ -149,7 +149,7 @@ func TestDocument(t *testing.T) {
 				defer func() {
 					r := recover()
 					if r != bsonerr.NilElement {
-						t.Errorf("Did not received expected error from panic. got %#v; want %#v", r, bsonerr.NilElement)
+						t.Errorf("Did not receive expected error from panic. got %#v; want %#v", r, bsonerr.NilElement)
 					}
 				}()
 				d := NewDocument()
@@ -217,7 +217,7 @@ func TestDocument(t *testing.T) {
 					defer func() {
 						r := recover()
 						if r != bsonerr.NilElement {
-							t.Errorf("Did not received expected error from panic. got %#v; want %#v", r, bsonerr.NilElement)
+							t.Errorf("Did not receive expected error from panic. got %#v; want %#v", r, bsonerr.NilElement)
 						}
 						require.Equal(t, tc.want, got)
 
@@ -249,7 +249,7 @@ func TestDocument(t *testing.T) {
 					defer func() {
 						r := recover()
 						if r != nil {
-							t.Errorf("Did not received expected error from panic. got %#v; want %#v", r, nil)
+							t.Errorf("Did not receive expected error from panic. got %#v; want %#v", r, nil)
 						}
 						require.Equal(t, tc.want, got)
 
@@ -388,7 +388,7 @@ func TestDocument(t *testing.T) {
 					defer func() {
 						r := recover()
 						if r != nil {
-							t.Errorf("Did not received expected error from panic. got %#v; want %#v", r, nil)
+							t.Errorf("Did not receive expected error from panic. got %#v; want %#v", r, nil)
 						}
 
 						require.Equal(t, tc.want, got)

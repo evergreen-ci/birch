@@ -24,7 +24,7 @@ func (d *Document) MarshalJSON() ([]byte, error) {
 
 		val, err := elem.value.MarshalJSON()
 		if err != nil {
-			return nil, errors.Wrapf(err, "problem marshaling value for key %s", elem.key)
+			return nil, errors.Wrapf(err, "marshaling value for key '%s'", elem.key)
 		}
 
 		out = append(out, val...)
@@ -50,7 +50,7 @@ func (a *Array) MarshalJSON() ([]byte, error) {
 
 		val, err := elem.MarshalJSON()
 		if err != nil {
-			return nil, errors.Wrapf(err, "problem marshaling array value for index %d", idx)
+			return nil, errors.Wrapf(err, "marshaling array value for element at index '%d'", idx)
 		}
 
 		out = append(out, val...)

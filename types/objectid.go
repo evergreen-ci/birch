@@ -133,7 +133,7 @@ func (id *ObjectID) UnmarshalJSON(b []byte) error {
 		}
 
 		if len(str) != 24 {
-			return errors.Errorf("cannot unmarshal into an ObjectID, the length must be 12 but it is %d", len(str))
+			return errors.Errorf("cannot unmarshal into an ObjectID, the length must be 24 but it is %d", len(str))
 		}
 
 		_, err = hex.Decode(id[:], []byte(str))
