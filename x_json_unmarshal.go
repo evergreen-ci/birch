@@ -203,7 +203,7 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 
 			oidp, err := types.ObjectIDFromHex(oid)
 			if err != nil {
-				return nil, errors.Wrapf(err, "parsing oid from dbref at %s", in.Key())
+				return nil, errors.Wrapf(err, "parsing oid from dbref at key '%s'", in.Key())
 			}
 
 			return EC.DBPointer(in.Key(), ns, oidp), nil
