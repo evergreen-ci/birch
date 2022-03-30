@@ -187,12 +187,12 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				case "$ref":
 					ns, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("decoding ns for dbref in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for dbref in key '%s'", in.Key())
 					}
 				case "$id":
 					oid, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("decoding ns for oid in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for oid in key '%s'", in.Key())
 					}
 				}
 				count++
@@ -226,12 +226,12 @@ func convertJSONElements(in *jsonx.Element) (*Element, error) {
 				case "pattern":
 					pattern, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("decoding ns for dbref in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for dbref in key '%s'", in.Key())
 					}
 				case "options":
 					options, ok = elem.Value().StringValueOK()
 					if !ok {
-						return nil, errors.Errorf("decoding ns for oid in %s", in.Key())
+						return nil, errors.Errorf("decoding ns for oid in key '%s'", in.Key())
 					}
 				}
 				count++
