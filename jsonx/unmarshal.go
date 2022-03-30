@@ -10,11 +10,11 @@ import (
 func (d *Document) UnmarshalJSON(in []byte) error {
 	res, err := internal.ParseBytes(in)
 	if err != nil {
-		return errors.Wrap(err, "problem parsing raw json")
+		return errors.Wrap(err, "parsing raw json")
 	}
 
 	if !res.IsObject() {
-		return errors.New("cannot unmarshal values or arrays into Documents")
+		return errors.New("cannot unmarshal values or arrays into documents")
 	}
 
 	res.ForEach(func(key, value internal.Result) bool {
@@ -37,7 +37,7 @@ func (d *Document) UnmarshalJSON(in []byte) error {
 func (a *Array) UnmarshalJSON(in []byte) error {
 	res, err := internal.ParseBytes(in)
 	if err != nil {
-		return errors.Wrap(err, "problem parsing raw json")
+		return errors.Wrap(err, "parsing raw json")
 	}
 
 	if !res.IsArray() {
@@ -59,7 +59,7 @@ func (a *Array) UnmarshalJSON(in []byte) error {
 func (v *Value) UnmarshalJSON(in []byte) error {
 	res, err := internal.ParseBytes(in)
 	if err != nil {
-		return errors.Wrap(err, "problem parsing raw json")
+		return errors.Wrap(err, "parsing raw json")
 	}
 
 	out, err := getValueForResult(res)
@@ -94,7 +94,7 @@ func getValueForResult(value internal.Result) (*Value, error) {
 			return VC.Float64(df), nil
 		}
 
-		return nil, errors.Errorf("number value [%s] is invalid [%+v]", value.Str, value)
+		return nil, errors.Errorf("number value '%s' is invalid [%+v]", value.Str, value)
 	case value.IsArray():
 		source := value.Array()
 		array := AC.Make(len(source))
@@ -115,7 +115,7 @@ func getValueForResult(value internal.Result) (*Value, error) {
 			var val *Value
 			val, err = getValueForResult(value)
 			if err != nil {
-				err = errors.Wrapf(err, "problem with subdocument at key %s", key.Str)
+				err = errors.Wrapf(err, "invalid subdocument for key '%s'", key.Str)
 				return false
 			}
 			doc.Append(EC.Value(key.Str, val))
