@@ -74,7 +74,7 @@ htmlCoverageOutput := $(foreach target,$(testPackages),$(buildDir)/output.$(targ
 # end output files
 
 # start basic development targets
-compile: $(srcFiles)
+compile: $(srcFiles) go.mod go.sum
 	$(gobin) build $(compilePackages)
 test: $(testOutput)
 lint: $(lintOutput)
