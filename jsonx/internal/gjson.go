@@ -205,9 +205,9 @@ func (t Result) IsArray() bool {
 
 // Exists returns true if value exists.
 //
-//  if gjson.Get(json, "name.last").Exists(){
-//		println("value exists")
-//  }
+//	 if gjson.Get(json, "name.last").Exists(){
+//			println("value exists")
+//	 }
 func (t Result) Exists() bool {
 	return t.Type != Null || len(t.Raw) != 0
 }
@@ -625,7 +625,6 @@ func tostr(json string) (raw string, str string) {
 //	nil, for JSON null
 //	map[string]interface{}, for JSON objects
 //	[]interface{}, for JSON arrays
-//
 func (t Result) Value() interface{} {
 	if t.Type == String {
 		return t.Str
@@ -1179,12 +1178,11 @@ func validnull(data []byte, i int) (outi int, ok bool) {
 
 // ValidBytes returns true if the input is valid json.
 //
-//  if !gjson.Valid(json) {
-//  	return errors.New("invalid json")
-//  }
+//	if !gjson.Valid(json) {
+//		return errors.New("invalid json")
+//	}
 //
 // If working with bytes, this method preferred over ValidBytes(string(data))
-//
 func validateJSON(json []byte) bool {
 	_, ok := validpayload(json, 0)
 	return ok
