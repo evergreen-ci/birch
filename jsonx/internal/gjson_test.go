@@ -2,6 +2,7 @@ package internal
 
 import (
 	"bytes"
+	cryptorand "crypto/rand"
 	"encoding/hex"
 	"encoding/json"
 	"math/rand"
@@ -23,10 +24,9 @@ func TestRandomData(t *testing.T) {
 			panic(v)
 		}
 	}()
-	rand.Seed(time.Now().UnixNano())
 	b := make([]byte, 200)
 	for i := 0; i < 2000000; i++ {
-		n, err := rand.Read(b[:rand.Int()%len(b)])
+		n, err := cryptorand.Read(b[:rand.Int()%len(b)])
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -346,12 +346,14 @@ func makeRandomJSONChars(b []byte) {
 }
 
 func TestValidRandom(t *testing.T) {
-	rand.Seed(time.Now().UnixNano())
 	b := make([]byte, 100000)
 	start := time.Now()
 	for time.Since(start) < time.Second*3 {
 		n := rand.Int() % len(b)
-		rand.Read(b[:n])
+		_, err := cryptorand.Read(b[:n])
+		if err != nil {
+			t.Fatal(err)
+		}
 		validpayload(b[:n], 0)
 	}
 

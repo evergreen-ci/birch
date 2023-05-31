@@ -2,7 +2,6 @@ package jsonx
 
 import (
 	"io"
-	"io/ioutil"
 
 	"github.com/pkg/errors"
 )
@@ -34,7 +33,7 @@ func (DocumentConstructor) BytesErr(in []byte) (*Document, error) {
 }
 
 func (DocumentConstructor) ReaderErr(in io.Reader) (*Document, error) {
-	buf, err := ioutil.ReadAll(in)
+	buf, err := io.ReadAll(in)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -62,7 +61,7 @@ func (ArrayConstructor) BytesErr(in []byte) (*Array, error) {
 }
 
 func (ArrayConstructor) ReaderErr(in io.Reader) (*Array, error) {
-	buf, err := ioutil.ReadAll(in)
+	buf, err := io.ReadAll(in)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
@@ -142,7 +141,7 @@ func (ValueConstructor) BytesErr(in []byte) (*Value, error) {
 
 func (ValueConstructor) Reader(in io.Reader) *Value { return valueConstructorOrPanic(VC.ReaderErr(in)) }
 func (ValueConstructor) ReaderErr(in io.Reader) (*Value, error) {
-	buf, err := ioutil.ReadAll(in)
+	buf, err := io.ReadAll(in)
 	if err != nil {
 		return nil, errors.WithStack(err)
 	}
